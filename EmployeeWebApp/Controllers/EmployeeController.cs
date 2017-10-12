@@ -71,20 +71,55 @@ namespace EmployeeWebApp.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult Delete(String Id)
+        public JsonResult Delete(string Id)
         {
             var existing = context.Employees.Find(Id);
-            if (existing != null)
+            
+            if (existing != null )
             {
+               
                 context.Employees.Remove(existing);
+               
                 context.SaveChanges();
             }
             else
             {
                 Console.WriteLine("Failed!");
             }
+            return Json("Deletion Successful!");
+        }
 
-            return View();
+        [Authorize]
+        [HttpPost]
+        public ActionResult EditEmployee(string Id)
+        {
+            var viewModel = new EditFormViewModel();
+            var existing = context.Employees.Find(Id);
+            if (existing != null)
+            {
+                var address = context.Addresses.Find(existing.Address);
+                if (address != null)
+                {
+                    viewModel.FirstName = existing.FirstName;
+                    viewModel.LastName = existing.LastName;
+                    viewModel.Email = existing.Email;
+                    viewModel.StreetAddress1 = address.StreetAddress1;
+                    viewModel.StreetAddress2 = address.StreetAddress2;
+                    viewModel.City = address.City;
+                    viewModel.State = address.State;
+                    viewModel.Country = address.Country;
+                    viewModel.ZipCode = address.ZipCode;
+                }
+            }
+            return View("Edit", viewModel);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult Edit(EditFormViewModel viewModel)
+        {
+           
+            return View("EmployeeList");
         }
     }
 }

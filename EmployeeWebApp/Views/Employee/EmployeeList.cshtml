@@ -6,18 +6,39 @@
 <h2>EmployeeList</h2>
 
 <script type="text/javascript">
-    
-    var deleteEmp = function (Id) {
-        console.log(Id);
-        $.ajax({
-            type: "POST",
-            url: '@Url.Action("Delete","Employee")',
+
+    var deleteEmp = function(Id, name) {
+        if (confirm("Do you want to delete " + name) === true) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete", "Employee")',
             data: { "Id": Id },
             success: function (response) {
                 console.log(response);
+                location.reload();
             },
             error: function() {
                 console.log("Error in deleting");
+            }
+                });
+        }
+        else {
+            console.log("Cancelled");
+        }
+    }
+
+    var editEmp = function(Id) {
+        console.log(Id);
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("EditEmployee", "Employee")',
+            data: { "Id": Id },
+            success: function (response) {
+                console.log(response);
+                $("body").html(response);
+            },
+            error: function() {
+                console.log("Error in Editing");
             }
         });
     }
@@ -43,7 +64,7 @@
                     <td>@employee.Email</td>
                     <td>@employee.Address.City</td>
                     <td>
-                        <button type="button" class="btn btn-primary" id="delete" onclick="deleteEmp('@employee.Id')">Edit</button> <button type="button" class="btn btn-primary" id="edit">Delete</button>
+                        <button type="button" class="btn btn-primary" id="delete" onclick="editEmp('@employee.Id')">Edit</button> <button type="button" class="btn btn-primary" id="edit" onclick="deleteEmp('@employee.Id','@employee.FirstName')">Delete</button>
                     </td>
                 </tr>
             }
