@@ -48,12 +48,11 @@ namespace EmployeeWebApp.Controllers
                 Address = address
             };
 
-           
-            
+
             context.Addresses.Add(address);
             context.Employees.Add(employee);
             context.SaveChanges();
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index", "Home");
         }
 
         [Authorize]
@@ -74,12 +73,11 @@ namespace EmployeeWebApp.Controllers
         public JsonResult Delete(string Id)
         {
             var existing = context.Employees.Find(Id);
-            
-            if (existing != null )
+
+            if (existing != null)
             {
-               
                 context.Employees.Remove(existing);
-               
+
                 context.SaveChanges();
             }
             else
@@ -97,19 +95,10 @@ namespace EmployeeWebApp.Controllers
             var existing = context.Employees.Find(Id);
             if (existing != null)
             {
-                var address = context.Addresses.Find(existing.Address);
-                if (address != null)
-                {
-                    viewModel.FirstName = existing.FirstName;
-                    viewModel.LastName = existing.LastName;
-                    viewModel.Email = existing.Email;
-                    viewModel.StreetAddress1 = address.StreetAddress1;
-                    viewModel.StreetAddress2 = address.StreetAddress2;
-                    viewModel.City = address.City;
-                    viewModel.State = address.State;
-                    viewModel.Country = address.Country;
-                    viewModel.ZipCode = address.ZipCode;
-                }
+                viewModel.Id = existing.Id;
+                viewModel.FirstName = existing.FirstName;
+                viewModel.LastName = existing.LastName;
+                viewModel.Email = existing.Email;
             }
             return View("Edit", viewModel);
         }
@@ -118,8 +107,27 @@ namespace EmployeeWebApp.Controllers
         [HttpPost]
         public ActionResult Edit(EditFormViewModel viewModel)
         {
-           
-            return View("EmployeeList");
+            EmployeeListViewModel listViewModel = new EmployeeListViewModel();
+
+            var existing = context.Employees.Find(viewModel.Id);
+
+            if (existing != null)
+            {
+                existing.FirstName = viewModel.FirstName;
+                existing.LastName = viewModel.LastName;
+                existing.Email = viewModel.Email;
+
+                context.Entry(existing).State = System.Data.Entity.EntityState.Modified;
+                context.Configuration.ValidateOnSaveEnabled = false;
+                context.SaveChanges();
+
+            }
+            var employees = context.Employees.ToList();
+            var addresses = context.Addresses.ToList();
+            listViewModel.Employees = employees;
+            listViewModel.Addresses = addresses;
+
+            return View("EmployeeList", listViewModel);
         }
     }
 }

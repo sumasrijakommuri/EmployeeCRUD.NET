@@ -9,6 +9,9 @@ namespace EmployeeWebApp.ViewModels
 {
     public class EditFormViewModel
     {
+        [Display(Name="Employee Id")]
+        public string Id { get; set; }
+
         [Display(Name = "First Name")]
         public string FirstName { get; set; }
 
@@ -18,17 +21,5 @@ namespace EmployeeWebApp.ViewModels
         [Display(Name = "Email")]
         public string Email { get; set; }
 
-        [Display(Name = "Street Address 1")]
-        public string StreetAddress1 { get; set; }
-        [Display(Name = "Street Address 2")]
-        public string StreetAddress2 { get; set; }
-        [Display(Name = "City")]
-        public string City { get; set; }
-        [Display(Name = "State")]
-        public string State { get; set; }
-        [Display(Name = "Country")]
-        public string Country { get; set; }
-        [Display(Name = "Zip Code")]
-        public string ZipCode { get; set; }
     }
 }
